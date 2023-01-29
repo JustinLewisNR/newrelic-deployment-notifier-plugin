@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.newrelicnotifier.api;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -42,6 +43,17 @@ public class NewRelicClientImplTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void makePayloadTest() {
+        String result = nrClient.makePayload("","","","","","test","","","jenkins","1");
+        String expected = "{\"query\":\"mutation {changeTrackingCreateDeployment(deployment: {user: \\\"jenkins\\\", entityGuid: \\\"test\\\", version: \\\"1\\\"}) {deploymentId}}\"}";
+        assertEquals(expected, result);
+
+        result = nrClient.makePayload("","","","BLUE_GREEN","","test","","","jenkins","1");
+        expected = "{\"query\":\"mutation {changeTrackingCreateDeployment(deployment: {user: \\\"jenkins\\\", deploymentType: BLUE_GREEN, entityGuid: \\\"test\\\", version: \\\"1\\\"}) {deploymentId}}\"}";
+        assertEquals(expected, result);
     }
     
     @SuppressWarnings("unchecked")
